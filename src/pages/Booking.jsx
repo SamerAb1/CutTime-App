@@ -120,7 +120,6 @@ export default observer(function Booking() {
         <section className="book__panel">
           <header className="book__section">
             <h2 className="book__title">Pick a day</h2>
-            <p className="book__hint">Browse the full month</p>
           </header>
 
           {/* Month calendar */}
@@ -236,7 +235,7 @@ export default observer(function Booking() {
           <div className="book__summary">
             {bookingStore.selectedDate && bookingStore.selectedTime ? (
               <>
-                <span className="book__badge">SELECTED</span>
+                <span className="book__badge"></span>
                 <strong>
                   {selDate} @ {bookingStore.selectedTime}
                 </strong>
