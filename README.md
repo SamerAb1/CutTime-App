@@ -208,6 +208,6 @@ Project Link: [https://github.com/yourusername/cuttime](https://github.com/youru
 
 **[⬆ Back to Top](#-cuttime---professional-barbershop-management-system)**
 
-Made with ❤️ by [Tzuriel Yeffet](https://github.com/TzurielYeffet) & [Samer Abuhaya(https://github.com/SamerAb1/)]
+Made with ❤️ by [Tzuriel Yeffet](https://github.com/TzurielYeffet) & [Samer Abuhaya](https://github.com/SamerAb1)
 
 </div>
