@@ -17,83 +17,122 @@ import { SERVICE } from "../../constants";
 import "./Dashboard.css";
 
 export default function Dashboard() {
-  // Calendar state
+  // calendar state
   const [monthAnchor, setMonthAnchor] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState(() =>
     startOfDay(new Date())
   );
+  const [monthDays, setMonthDays] = useState([]);
   const todayStart = startOfDay(new Date());
-  const selectedDateStr = format(selectedDate, "yyyy-MM-dd");
 
-  // Data
+  // data state
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
 
-  // Stats
   const stats = useMemo(() => {
     const count = rows.length;
     const revenue = count * SERVICE.price;
     return { count, revenue };
   }, [rows]);
 
-  // Load appointments for selected day
-  async function load() {
+  // build month grid whenever the anchor changes
+  useEffect(() => {
+    const start = startOfWeek(startOfMonth(monthAnchor), { weekStartsOn: 0 });
+    const end = endOfWeek(endOfMonth(monthAnchor), { weekStartsOn: 0 });
+    setMonthDays(eachDayOfInterval({ start, end }));
+  }, [monthAnchor]);
+
+  // load appointments for the selected day
+  async function loadAppointments(day = selectedDate) {
     setLoading(true);
+    setErr("");
+    const dayStr = format(day, "yyyy-MM-dd");
 
     const { data, error } = await supabase
       .from("appointments")
       .select(
         `
         id,
+        appointment_date,
         appointment_time,
         status,
         notes,
         guest_name,
-        guest_phone,
-        customer:customer_id (name, phone)
+        guest_email,
+        guest_phone
       `
       )
-      .eq("appointment_date", selectedDateStr)
-      .order("appointment_time");
+      .eq("appointment_date", dayStr)
+      .order("appointment_time", { ascending: true });
 
-    if (!error) setRows(data ?? []);
+    if (error) {
+      console.error("Admin load error:", error);
+      setErr(error.message || "Failed to load appointments.");
+      setRows([]);
+    } else {
+      setRows(data ?? []);
+    }
     setLoading(false);
   }
 
+  // initial load
   useEffect(() => {
-    load();
+    loadAppointments(selectedDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate]);
+  }, []);
 
-  // Cancel (delete) an appointment
-  async function cancel(id) {
-    await supabase.from("appointments").delete().eq("id", id);
-    await load();
-  }
+  const pickDay = (day) => {
+    // admin can view past/future days; no need to block past
+    setSelectedDate(day);
+    loadAppointments(day);
+  };
 
-  // Build month grid
-  const monthDays = (() => {
-    const start = startOfWeek(startOfMonth(monthAnchor), { weekStartsOn: 0 });
-    const end = endOfWeek(endOfMonth(monthAnchor), { weekStartsOn: 0 });
-    return eachDayOfInterval({ start, end });
-  })();
+  const approve = async (id) => {
+    setErr("");
+    const { error } = await supabase
+      .from("appointments")
+      .update({ status: "approved" })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      setErr(error.message || "Could not approve appointment.");
+    } else {
+      loadAppointments(selectedDate);
+    }
+  };
+
+  const cancelAndDelete = async (id) => {
+    setErr("");
+    // If you prefer keeping history, update to "cancelled" first (or only):
+    // await supabase.from("appointments").update({ status: "cancelled" }).eq("id", id);
+    const { error } = await supabase.from("appointments").delete().eq("id", id);
+    if (error) {
+      console.error(error);
+      setErr(error.message || "Could not cancel appointment.");
+    } else {
+      loadAppointments(selectedDate);
+    }
+  };
+
+  const selDateLabel = format(selectedDate, "EEE d MMM, yyyy");
 
   return (
     <div className="admin">
-      <div className="admin__overlay" />
-      <div className="admin__inner">
-        <header className="admin__header">
-          <h2>Appointments • {format(selectedDate, "MMM d, yyyy")}</h2>
-          <p className="admin__stats">
-            📅 {stats.count} Appointments | 💰 ${stats.revenue} Revenue
-          </p>
-        </header>
+      {/* Background overlay handled in CSS */}
 
-        {/* Calendar */}
+      <div className="admin__grid">
+        {/* LEFT: Calendar */}
         <section className="admin__panel">
+          <header className="admin__section">
+            <h2 className="admin__title">Pick a day</h2>
+            <p className="admin__hint">Browse the full month</p>
+          </header>
+
           <div className="month">
             <div className="month__header">
               <button
+                type="button"
                 className="month__nav"
                 aria-label="Previous month"
                 onClick={() => setMonthAnchor((d) => subMonths(d, 1))}
@@ -104,6 +143,7 @@ export default function Dashboard() {
                 {format(monthAnchor, "MMMM yyyy")}
               </div>
               <button
+                type="button"
                 className="month__nav"
                 aria-label="Next month"
                 onClick={() => setMonthAnchor((d) => addMonths(d, 1))}
@@ -123,15 +163,14 @@ export default function Dashboard() {
             <div className="month__grid">
               {monthDays.map((day) => {
                 const inMonth = isSameMonth(day, monthAnchor);
-                const isPast = day < todayStart;
+                const isToday = isSameDay(day, todayStart);
                 const active = isSameDay(day, selectedDate);
 
                 const classes = [
                   "month__cell",
                   !inMonth && "month__cell--muted",
-                  isPast && "month__cell--past",
                   active && "month__cell--active",
-                  inMonth && !isPast && "month__cell--open",
+                  isToday && "month__cell--today",
                 ]
                   .filter(Boolean)
                   .join(" ");
@@ -139,12 +178,12 @@ export default function Dashboard() {
                 return (
                   <button
                     key={+day}
+                    type="button"
                     className={classes}
-                    disabled={!inMonth}
-                    onClick={() => !isPast && setSelectedDate(startOfDay(day))}
+                    onClick={() => pickDay(day)}
+                    aria-pressed={active}
                   >
                     <span className="month__date">{format(day, "d")}</span>
-                    {inMonth && !isPast && <span className="month__dot" />}
                   </button>
                 );
               })}
@@ -152,8 +191,21 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Table */}
+        {/* RIGHT: List + stats */}
         <section className="admin__panel">
+          <header className="admin__section admin__section--tight">
+            <h2 className="admin__title">Appointments</h2>
+            <p className="admin__hint">
+              Showing for <strong>{selDateLabel}</strong>
+            </p>
+          </header>
+
+          <p className="admin__stats">
+            📅 {stats.count} Appointments | 💰 ${stats.revenue} Revenue
+          </p>
+
+          {err && <div className="admin__error">{err}</div>}
+
           {loading ? (
             <div className="admin__muted">Loading…</div>
           ) : (
@@ -168,33 +220,39 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {rows.length ? (
-                  rows.map((r) => {
-                    const name = r.customer?.name || r.guest_name || "—";
-                    const phone = r.customer?.phone || r.guest_phone || "";
-                    return (
-                      <tr key={r.id}>
-                        <td>{r.appointment_time}</td>
-                        <td>
-                          {name} {phone && <small>({phone})</small>}
-                        </td>
-                        <td>{r.status}</td>
-                        <td>{r.notes}</td>
-                        <td className="admin__actions">
-                          <button
-                            className="btn btn--danger"
-                            onClick={() => cancel(r.id)}
-                          >
-                            Cancel
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
+                {rows.map((r) => (
+                  <tr key={r.id}>
+                    <td className="mono">{r.appointment_time}</td>
+                    <td>
+                      <div className="admin__cust">
+                        <strong>{r.guest_name}</strong>
+                        <small>
+                          {r.guest_phone} · {r.guest_email}
+                        </small>
+                      </div>
+                    </td>
+                    <td>{r.status}</td>
+                    <td className="admin__notes">{r.notes}</td>
+                    <td className="admin__actions">
+                      <button
+                        onClick={() => approve(r.id)}
+                        className="btn btn--ok"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => cancelAndDelete(r.id)}
+                        className="btn btn--danger"
+                      >
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {!rows.length && (
                   <tr>
                     <td colSpan={5} className="admin__empty">
-                      No appointments for this date
+                      No appointments for this day
                     </td>
                   </tr>
                 )}

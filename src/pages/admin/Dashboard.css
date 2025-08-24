@@ -1,128 +1,170 @@
 @import "../../styles/variables.css";
 
-/* Page background like other screens */
-.admin{
+/* ===== Page background (same vibe as other pages) ===== */
+
+.admin {
   position: relative;
   min-height: 100svh;
   padding: 16px 12px max(24px, var(--safe-bottom));
   background: url("/images/shop.jpg") center / cover no-repeat fixed;
+  overflow-x: hidden;
 }
-.admin__overlay{
-  content:"";
+
+/* dark/soft overlay for readability */
+.admin::before {
+  content: "";
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
   background:
-    radial-gradient(1200px 700px at 50% 15%, rgba(12,22,35,.45), transparent 60%),
-    linear-gradient(180deg, rgba(6,12,20,.55), rgba(6,12,20,.45));
+    radial-gradient(1200px 700px at 50% 15%, rgba(12, 22, 35, .45), transparent 60%),
+    linear-gradient(180deg, rgba(6, 12, 20, .55), rgba(6, 12, 20, .45));
 }
-.admin__inner{ position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
 
-/* Panels */
-.admin__panel{
+/* keep content above overlay */
+.admin__grid,
+.admin__panel {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Layout ===== */
+
+.admin__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  align-content: start;
+}
+@media (min-width: 900px) {
+  .admin__grid { grid-template-columns: 1.1fr 1.6fr; gap: 20px; }
+}
+
+.admin__panel {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 14px;
-  margin-top: 12px;
   box-shadow: var(--shadow);
+  padding: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
 }
 
-.admin__header h2{
-  margin: 0 0 6px;
+.admin__section { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.admin__section--tight { margin-top: 8px; }
+
+.admin__title {
+  margin: 0;
   font-family: var(--font-head);
   color: #cfe4ff;
+  font-size: clamp(20px, 5vw, 28px);
 }
-.admin__stats{ margin: 0 0 10px; color: var(--muted); }
-.admin__muted{ color: var(--muted); }
+.admin__hint { margin: 0; color: var(--muted); font-size: 12px; }
+.admin__muted { color: var(--muted); }
+.admin__error { color: #ff9b9b; margin: 8px 0; }
 
-/* Table */
-.admin__table{ width: 100%; border-collapse: collapse; }
-.admin__table th, .admin__table td{
-  padding: 12px;
-  border-bottom: 1px solid #253041;
-}
-.admin__empty{ text-align: center; color: var(--muted); padding: 28px 0; }
-.admin__actions .btn{
-  background: #122234;
-  border: 1px solid #2a3645;
+/* ===== Stats ===== */
+.admin__stats {
+  margin: 8px 0 12px;
   color: #e8eef6;
-  padding: 6px 12px;
-  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* ===== Table ===== */
+.admin__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+.admin__table thead th {
+  color: #9aa4b2;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  padding: 0 10px 4px;
+}
+.admin__table tbody tr {
+  background: #0f1720;
+  border: 1px solid #2a3645;
+  border-radius: 12px;
+}
+.admin__table tbody td {
+  padding: 12px 10px;
+  vertical-align: top;
+}
+.admin__empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px 10px;
+}
+.admin__notes { color: #d7deea; }
+.admin__cust small { display: block; color: #9aa4b2; margin-top: 2px; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+/* Buttons */
+.btn { 
+  border-radius: 10px; border: 1px solid #2a3645; background: #0f1720; 
+  padding: 8px 10px; color: #e8eef6; cursor: pointer;
+}
+.btn:hover { border-color: #3a5678; }
+.btn--ok { background: linear-gradient(180deg, #1e3a5f, #102334); }
+.btn--danger { background: linear-gradient(180deg, #5f1e1e, #331010); }
+
+/* ===== Month calendar (mirrors Booking so it feels consistent) ===== */
+.month { width: 100%; }
+.month__header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; margin-bottom: 8px;
+}
+.month__title { font-weight: 700; letter-spacing: .4px; }
+
+.month__nav {
+  width: 38px; height: 34px; display: grid; place-items: center;
+  border-radius: 10px; border: 1px solid #2a3645; background: #0f1720; color: #e8eef6;
   cursor: pointer;
 }
-.admin__actions .btn--danger{
-  background: #2a1316;
-  border-color: #5b2b2b;
-}
-.admin__actions .btn--danger:hover{ background: #3a1b20; }
+.month__nav:hover { border-color: #3a5678; }
 
-/* ===== Calendar (same language as Booking) ===== */
-.month{ width:100%; }
-.month__header{
-  display:flex; justify-content:space-between; align-items:center;
-  gap:12px; margin-bottom:8px;
+.month__weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 6px; margin-bottom: 6px; padding: 0 2px;
 }
-.month__title{ font-weight:700; letter-spacing:.4px; }
-.month__nav{
-  width:38px; height:34px;
-  display:grid; place-items:center;
-  border-radius:10px; border:1px solid #2a3645; background:#0f1720; color:#e8eef6;
-  cursor:pointer;
-}
-.month__nav:hover{ border-color:#3a5678; }
-
-.month__weekdays{
-  display:grid; grid-template-columns: repeat(7, 1fr);
-  gap:6px; margin-bottom:6px; padding:0 2px;
-}
-.month__weekday{
-  text-align:center; color:#9aa4b2; font-size:12px; font-weight:600;
+.month__weekday {
+  text-align: center; color: #9aa4b2; font-size: 12px; font-weight: 600;
 }
 
-.month__grid{
-  display:grid; grid-template-columns: repeat(7, 1fr);
-  gap:6px;
+.month__grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
 }
-.month__cell{
-  position:relative;
-  height:52px;
-  border-radius:12px;
-  background:#0f1720;
-  border:1px solid #1f2937;
-  color:#94a3b8;
-  cursor:not-allowed;
+.month__cell {
+  position: relative;
+  height: 52px;
+  border-radius: 12px;
+  background: #0f1720;
+  border: 1px solid #1f2937;
+  color: #94a3b8;
+  cursor: pointer;
 }
-.month__cell--muted{ opacity:.45; }
-.month__cell--open{
-  cursor:pointer;
-  border-color:#2a3645; color:#e5e7eb;
+.month__cell--muted { opacity: .45; }
+.month__cell--active {
+  background: linear-gradient(180deg, #1e3a5f, #102334);
+  border-color: #3a5678; color: #eaf2ff;
+  box-shadow: 0 0 0 2px rgba(96,165,250,.25) inset;
 }
-.month__cell--open:hover{ border-color:#3a5678; }
-.month__cell--active{
-  background:linear-gradient(180deg, #1e3a5f, #102334);
-  border-color:#3a5678;
-  color:#eaf2ff;
-  box-shadow:0 0 0 2px rgba(96,165,250,.25) inset;
-}
-.month__cell--past{
-  opacity:.35;
-  cursor:not-allowed;
-  filter:grayscale(.2);
-}
-.month__date{
-  position:absolute; top:8px; left:10px;
-  font-weight:700; font-size:14px;
-}
-.month__dot{
-  position:absolute; right:10px; bottom:10px;
-  width:6px; height:6px; border-radius:999px;
-  background:#66c2ff;
-  box-shadow:0 0 0 2px rgba(102,194,255,.18);
+.month__cell--today {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .08) inset;
 }
 
-/* Mobile background attachment fix */
+.month__date {
+  position: absolute; top: 8px; left: 10px;
+  font-weight: 700; font-size: 14px;
+}
+
+/* Mobile: avoid fixed-attachment quirks */
 @media (max-width: 768px){
   .admin{ background-attachment: scroll; background-position: center top; }
 }

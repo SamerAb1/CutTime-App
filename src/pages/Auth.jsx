@@ -1,83 +1,58 @@
-// src/pages/Auth.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase-client";
 import "./Auth.css";
 
 export default function Auth() {
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [logo, setLogo] = useState("/images/logo-viking.png"); // in /public/images/
+  const [logo, setLogo] = useState("/images/logo-viking.png"); // try themed logo first
+  const navigate = useNavigate();
 
-  // Prevent scroll while this page is visible (desktop)
-  useEffect(() => {
-    document.body.classList.add("auth-no-scroll");
-    return () => document.body.classList.remove("auth-no-scroll");
-  }, []);
-
-  // If signed in already → go to admin
-  useEffect(() => {
-    let unsub;
-
-    // 1) Immediate check
-    supabase.auth.getSession().then(({ data }) => {
-      if (data?.session) navigate("/admin", { replace: true });
-    });
-
-    // 2) React to future sign-ins
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) navigate("/admin", { replace: true });
-    });
-    unsub = sub?.subscription;
-
-    return () => unsub?.unsubscribe?.();
-  }, [navigate]);
-
-  const handleLogoError = () => {
+  // Fallback logo if the first one is missing
+  const onLogoError = () => {
     if (logo !== "/images/logo.png") setLogo("/images/logo.png");
   };
 
-  async function handleSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
     setErr("");
     setLoading(true);
-
     const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
+      email,
       password: pw,
     });
-
-    setLoading(false);
-
     if (error) {
-      setErr(error.message || "Sign in failed.");
-      return;
+      setErr(error.message);
+    } else {
+      // go straight to admin dashboard
+      navigate("/admin");
     }
-
-    // Navigation also handled by onAuthStateChange, but this is instant:
-    navigate("/admin", { replace: true });
+    setLoading(false);
   }
+
+  // Optional: focus email on mount
+  useEffect(() => {
+    const el = document.querySelector(".auth-card input[type='email']");
+    el?.focus();
+  }, []);
 
   return (
     <main className="auth-screen">
       <div className="auth-overlay" />
 
       <section className="auth-card">
-        {/* Brand */}
         <img
           className="auth-logo"
           src={logo}
           alt="CutTime Barbers"
-          onError={handleLogoError}
+          onError={onLogoError}
         />
         <h1 className="auth-title">Barber Login</h1>
 
-        {/* Form */}
-        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        <form className="auth-form" onSubmit={onSubmit} noValidate>
           <input
             className="input"
             type="email"
@@ -88,8 +63,6 @@ export default function Auth() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
-          {/* same style as booking inputs, no eye toggle */}
           <input
             className="input"
             type="password"
