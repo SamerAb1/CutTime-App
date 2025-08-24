@@ -33,7 +33,7 @@
 }
 
 .auth-logo{
-  width: 56px; height: 56px; object-fit: contain; user-select:none;
+  width: 200px; height: 200px; object-fit: contain; user-select:none;
   filter: drop-shadow(0 4px 12px rgba(0,0,0,.35));
 }
 .auth-title{
