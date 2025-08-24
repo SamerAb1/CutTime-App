@@ -1,0 +1,199 @@
+@import "../styles/variables.css";
+
+/* ───────────────────────────────────────────────────────────
+   Page wrapper + background (mobile-scroll safe)
+   ─────────────────────────────────────────────────────────── */
+.book{
+  position: relative;
+  min-height: 100dvh;                      /* dynamic viewport height – fixes iOS 100vh quirks */
+  padding:16px 12px max(24px, var(--safe-bottom));
+  max-width:100%;
+  overflow-x:hidden;                       /* prevent sideways scroll */
+  overflow-y:auto;                         /* allow vertical scroll on mobile */
+  -webkit-overflow-scrolling: touch;
+
+  /* background image */
+  background: url("/images/shop.jpg") center / cover no-repeat fixed;
+}
+
+/* Soft dark overlay so panels & text pop, but doesn’t block input/taps */
+.book::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1200px 700px at 50% 15%, rgba(12,22,35,.45), transparent 60%),
+    linear-gradient(180deg, rgba(6,12,20,.55), rgba(6,12,20,.45));
+}
+
+/* Make sure content sits above the overlay */
+.book__grid,
+.book__panel{ position: relative; z-index: 1; }
+
+/* Mobile/tablets: avoid fixed-attachment scroll trap */
+@media (max-width: 900px), (pointer: coarse){
+  .book{
+    background-attachment: scroll;
+    background-position: center top;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────
+   Layout grid
+   ─────────────────────────────────────────────────────────── */
+.book__grid{
+  display:grid; gap:14px;
+  grid-template-columns: 1fr;
+  align-content:start;
+}
+@media (min-width: 900px){
+  .book__grid{ grid-template-columns: 1.4fr 1fr; gap:20px; }
+}
+
+/* Panels */
+.book__panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:14px;
+  width:100%;
+  box-sizing:border-box;
+  overflow:visible;
+}
+.book__panel *{ min-width:0; }
+
+/* ───────────────────────────────────────────────────────────
+   Headings / helpers
+   ─────────────────────────────────────────────────────────── */
+.book__section{ display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+.book__section--tight{ margin-top:8px; }
+.book__title{ margin:0; font-family:var(--font-head); color:#cfe4ff; font-size:clamp(20px,5vw,28px); }
+.book__hint{ margin:0; color:var(--muted); font-size:12px; }
+.book__muted{ color:var(--muted); }
+.book__error{ color:#ff9b9b; margin-top:8px; }
+.book__ok{ color:#9ef0b1; margin-top:8px; }
+
+/* Selected summary chip */
+.book__summary{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; margin:6px 0 12px;
+  background:#0f1720; border:1px solid #2a3645; border-radius:12px;
+}
+.book__badge{
+  font-size:11px; text-transform:uppercase; letter-spacing:.6px;
+  padding:3px 6px; border-radius:8px; background:#1b2838; border:1px solid #2b3c53; color:#cfe4ff;
+}
+
+/* ───────────────────────────────────────────────────────────
+   Month calendar
+   ─────────────────────────────────────────────────────────── */
+.month{ width:100%; }
+.month__header{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; margin-bottom:8px;
+}
+.month__title{ font-weight:700; letter-spacing:.4px; }
+.month__nav{
+  width:38px; height:34px;
+  display:grid; place-items:center;
+  border-radius:10px; border:1px solid #2a3645; background:#0f1720; color:#e8eef6;
+  cursor:pointer;
+}
+.month__nav:hover{ border-color:#3a5678; }
+
+.month__weekdays{
+  display:grid; grid-template-columns: repeat(7, 1fr);
+  gap:6px; margin-bottom:6px; padding:0 2px;
+}
+.month__weekday{
+  text-align:center; color:#9aa4b2; font-size:12px; font-weight:600;
+}
+
+.month__grid{
+  display:grid; grid-template-columns: repeat(7, 1fr);
+  gap:6px;
+}
+.month__cell{
+  position:relative;
+  height:52px;
+  border-radius:12px;
+  background:#0f1720;
+  border:1px solid #1f2937;
+  color:#94a3b8;
+  cursor:not-allowed;
+}
+.month__cell--muted{ opacity:.45; }
+.month__cell--open{
+  cursor:pointer;
+  border-color:#2a3645; color:#e5e7eb;
+}
+.month__cell--open:hover{ border-color:#3a5678; }
+.month__cell--active{
+  background:linear-gradient(180deg, #1e3a5f, #102334);
+  border-color:#3a5678;
+  color:#eaf2ff;
+  box-shadow:0 0 0 2px rgba(96,165,250,.25) inset;
+}
+
+.month__date{
+  position:absolute; top:8px; left:10px;
+  font-weight:700; font-size:14px;
+}
+.month__dot{
+  position:absolute; right:10px; bottom:10px;
+  width:6px; height:6px; border-radius:999px;
+  background:#66c2ff;
+  box-shadow:0 0 0 2px rgba(102,194,255,.18);
+}
+
+.month__cell--past{
+  opacity:.35;
+  cursor:not-allowed;
+  filter:grayscale(.2);
+}
+
+/* ───────────────────────────────────────────────────────────
+   Time slots
+   ─────────────────────────────────────────────────────────── */
+.slots{
+  display:grid; gap:8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));  /* phones: 3 columns */
+}
+@media (min-width:640px){
+  .slots{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width:1100px){
+  .slots{ grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+.slot{
+  display:flex; align-items:center; justify-content:center;
+  min-height:44px; padding:8px 6px;
+  border-radius:12px;
+  background:#0f1720; border:1px solid #2a3645;
+  color:#e8eef6 !important;
+  font-size:14px; font-weight:600; letter-spacing:.2px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition: transform .06s, border-color .15s, box-shadow .15s, background .15s;
+}
+.slot:hover{ transform:translateY(-1px); border-color:#3a5678; }
+.slot--active{
+  background:linear-gradient(180deg, #1e3a5f, #102334);
+  border-color:#3a5678; box-shadow:0 0 0 2px rgba(96,165,250,.25) inset;
+}
+.slot--disabled{ opacity:.38; cursor:not-allowed; }
+
+/* ───────────────────────────────────────────────────────────
+   Form
+   ─────────────────────────────────────────────────────────── */
+.form{ display:grid; gap:10px; max-width:100%; }
+.form input, .form textarea{
+  width:100%; box-sizing:border-box; appearance:none; -webkit-appearance:none;
+}
+
+/* CTA */
+.book__cta{ width:100%; margin-top:8px; }

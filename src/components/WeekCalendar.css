@@ -1,0 +1,14 @@
+@import "../styles/variables.css";
+
+.weekcal__bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.weekcal__range{margin:0;}
+.weekcal__grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.weekcal__day{border:1px solid var(--border);border-radius:12px;padding:8px;}
+.weekcal__daytitle{font-weight:700;margin-bottom:6px;}
+.weekcal__date{opacity:.7;}
+.weekcal__slots{display:grid;gap:6px;}
+.weekcal__slot{border:1px solid #4b5563;border-radius:8px;padding:8px 10px;background:var(--panel);}
+.weekcal__slot--active{border:2px solid var(--blue);}
+.weekcal__slot--disabled{opacity:.45;cursor:not-allowed;}
+.weekcal__closed{opacity:.6;}
+.weekcal__error{color:tomato;}

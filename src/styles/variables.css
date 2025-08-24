@@ -1,0 +1,26 @@
+/* Viking theme — fonts + palette */
+@import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Montserrat:wght@400;600;700&display=swap");
+
+:root{
+  /* fonts */
+  --font-head: "UnifrakturMaguntia", serif;  /* runic/gothic headings */
+  --font-body: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* palette: iron + fjord ice */
+  --bg:#0b1115;       /* deep night */
+  --panel:#0f1720;    /* iron panel */
+  --fg:#e5e7eb;       /* frost text */
+  --muted:#9aa4b2;    /* mist */
+  --border:#1f2937;   /* forged edge */
+
+  --ice:#60a5fa;      /* icy blue accent */
+  --ice-2:#93c5fd;    /* lighter ice */
+  --ember:#b45309;    /* bronze/ember secondary */
+
+  --radius:14px;
+  --radius-sm:10px;
+  --shadow:0 14px 28px rgba(0,0,0,.35);
+
+  --nav-h: 64px;   /* actual navbar height */
+  --bar-h: 10px;   /* runic divider height */
+}

@@ -1,0 +1,54 @@
+@import "../styles/variables.css";
+
+
+/* full-bleed hero uses exact viewport minus navbar + divider */
+.hero--full{
+  width:100%;
+  height:calc(100vh - var(--nav-h) - var(--bar-h));
+  margin:0;
+  position:relative;
+  display:grid;place-items:center;
+  background:
+    linear-gradient(to bottom, rgba(11,17,21,.45), rgba(11,17,21,.65)),
+    url("/images/shop.jpg") center/cover no-repeat;
+  overflow:hidden;         /* avoid scrollbars */
+}
+
+.hero__center{
+  width:100%;
+  display:grid;
+  place-items:center;
+  padding:4vh 20px;
+}
+
+/* glass panel */
+.hero__panel{
+  position:relative;
+  z-index:2;                /* sits above image overlay */
+  background:rgba(15,23,32,.58);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:28px 32px 30px;
+  box-shadow:0 14px 28px rgba(0,0,0,.35);
+  backdrop-filter:saturate(120%) blur(6px);
+  text-align:center;
+  max-width:min(92vw, 860px);
+}
+
+.hero__logo{
+  width:200px;height:200px;object-fit:contain;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,.55));
+  margin:0 auto 10px;
+}
+
+.hero__title{
+  font-family:var(--font-head);
+  font-size:clamp(40px, 6.2vw, 80px);
+  line-height:1.06;
+  margin:6px 0 18px;
+  color:#93c5fd;
+  text-shadow:0 2px 0 rgba(0,0,0,.85);
+  letter-spacing:.8px;
+}
+
+.hero__cta{ display:flex; justify-content:center; gap:14px; }

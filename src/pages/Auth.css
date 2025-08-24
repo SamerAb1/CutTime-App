@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=UnifrakturMaguntia&display=swap');
+
+:root{
+  /* Theme (matches booking page) */
+  --txt: #e7eef7;
+  --muted: #9bb0c7;
+  --focus: #7aa7ff;
+
+  --panel: rgba(10,18,28,.72);
+  --panel-border: rgba(137,183,255,.12);
+  --accent1: #163251;
+  --accent2: #0f2337;
+
+  --field-h: 54px;
+  --radius: 14px;
+  --card-radius: 26px;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--txt);
+  background: #0b1420;
+}
+#root { overflow: hidden; }            /* prevents rare parent overflow */
+
+header, nav, .navbar, .site-nav {
+  position: relative;
+  z-index: 40;
+}
+/* Prevent page scroll while auth is shown */
+.auth-no-scroll { overflow: hidden; }
+
+/* Full-viewport scene (no scroll). Using fixed + inset keeps it glued. */
+.auth-screen{
+  position: fixed;
+  inset: 0;                /* top:0 right:0 bottom:0 left:0 */
+  width: 100vw;
+  height: 100vh;           /* desktop: exact viewport */
+  display: grid;
+  place-items: center;
+  overflow: hidden;        /* no inner scrollbars */
+  background: url('/images/shop.jpg') center/cover no-repeat;
+  z-index: 0;              /* sits behind the card */
+}
+
+/* Subtle darkening so inputs pop */
+.auth-overlay{
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 50% 20%, rgba(16,29,48,.45), transparent 60%),
+    linear-gradient(180deg, rgba(5,12,20,.55), rgba(5,12,20,.45));
+}
+
+/* Center card (glass) */
+.auth-card{
+  position: relative;
+  z-index: 1;
+  width: min(680px, 92vw);
+  border-radius: var(--card-radius);
+  background: linear-gradient(180deg, var(--panel), rgba(6,12,20,.60));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: clamp(22px, 4vw, 36px);
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+/* Logo (will hide if not found due to onError in JSX fallback) */
+.auth-logo{
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  user-select: none;
+}
+
+/* "Barber Login" in the same font used on the landing hero */
+.auth-title{
+  margin: 6px 0 6px;
+  font-family: 'UnifrakturMaguntia', serif;
+  font-weight: 400;
+  text-align: center;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1;
+  color: #c7d8ff;
+  text-shadow: 0 2px 12px rgba(10,25,40,.45);
+  letter-spacing: 0.5px;
+}
+
+/* Form */
+.auth-form{
+  width: min(560px, 100%);
+  margin-inline: auto;
+  display: grid;
+  gap: 12px;
+}
+
+/* Input style (same as booking) */
+/* Dark, booking-style inputs */
+.input{
+  width: 100%;
+  height: var(--field-h);
+  border-radius: var(--radius);
+  border: 1px solid rgba(140,180,255,.18);
+  background: linear-gradient(180deg, #0f1b2a, #0a1522);
+  color: var(--txt);
+  padding: 0 16px;
+  font: 500 16px/1 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.input::placeholder{ color:#7c8fa6; }
+.input:focus{
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(122,167,255,.15);
+}
+
+/* Kill the light-blue autofill background on Chrome/Safari */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--txt);
+  -webkit-box-shadow: 0 0 0 1000px #0a1522 inset;  /* inner fill */
+          box-shadow: 0 0 0 1000px #0a1522 inset;
+  border: 1px solid rgba(140,180,255,.18);
+  transition: background-color 9999s ease-in-out 0s; /* prevents flash */
+}
+
+/* Button style (matches booking action buttons) */
+.btn-primary{
+  width: 100%;
+  height: var(--field-h);
+  border-radius: var(--radius);
+  border: 1px solid rgba(140,180,255,.22);
+  padding: 0 18px;
+  color: var(--txt);
+  background: linear-gradient(180deg, var(--accent1), var(--accent2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 30px rgba(8,22,38,.65);
+  font: 700 16px/1 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  letter-spacing: .02em;
+  transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease, opacity .12s ease;
+  cursor: pointer;
+}
+.btn-primary:hover{
+  border-color: rgba(140,180,255,.32);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 14px 34px rgba(8,22,38,.75);
+}
+.btn-primary:active{ transform: translateY(1px); }
+.btn-primary:disabled{ opacity: .6; cursor: not-allowed; }
+
+/* Feedback */
+.auth-error{
+  width: 100%;
+  background: rgba(255,107,107,.08);
+  border: 1px solid rgba(255,107,107,.28);
+  color: #ffd6d6;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font: 500 14px/1.3 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.auth-hint{
+  width: 100%;
+  text-align: center;
+  margin-top: 6px;
+  color: var(--muted);
+  font: 500 14px/1.4 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* Mobile tweaks */
+@media (max-width: 420px){
+  :root{ --field-h: 50px; --radius: 12px; --card-radius: 22px; }
+  .auth-card{ padding: 18px; }
+  .auth-logo{ width: 76px; height: 76px; }
+}
