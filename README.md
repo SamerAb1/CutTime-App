@@ -113,7 +113,7 @@ CutTime is a comprehensive barbershop management web application designed to rev
 1. **Clone the repository**
    ```bash
    git clone https://github.com/SamerAb1/CutTime-App
-   cd cuttime
+   cd cutTime-app
    ```
 
 2. **Install dependencies**
