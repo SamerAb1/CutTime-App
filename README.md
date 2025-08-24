@@ -200,7 +200,7 @@ Project Link: [https://github.com/yourusername/cuttime](https://github.com/youru
 - [React Icons](https://react-icons.github.io/react-icons/) - Beautiful icons
 - [Unsplash](https://unsplash.com/) - Stock photography
 - [Tailwind UI](https://tailwindui.com/) - UI components inspiration
-- [Vercel](https://vercel.com/) - Hosting and deployment
+- [Github pages]() - Hosting and deployment
 
 ---
 
@@ -208,6 +208,6 @@ Project Link: [https://github.com/yourusername/cuttime](https://github.com/youru
 
 **[⬆ Back to Top](#-cuttime---professional-barbershop-management-system)**
 
-Made with ❤️ by [Tzuriel Yeffet](https://github.com/TzurielYeffet) //add Samer & or
+Made with ❤️ by [Tzuriel Yeffet](https://github.com/TzurielYeffet) & [Samer Abuhaya(https://github.com/SamerAb1/)]
 
 </div>
