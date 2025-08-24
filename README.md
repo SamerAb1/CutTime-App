@@ -112,7 +112,7 @@ CutTime is a comprehensive barbershop management web application designed to rev
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/TzurielYeffet/cuttime.git
+   git clone https://github.com/SamerAb1/CutTime-App
    cd cuttime
    ```
 
@@ -192,7 +192,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Tzuriel Yeffet - Tzuriel66ye@yahoo.com
 Samer Abuhaya - Samerabuhaya@gmail.com
 
-Project Link: [https://github.com/yourusername/cuttime](https://github.com/yourusername/cuttime)
+Project Link: [https://github.com/SamerAb1/CutTime-App]
 
 ## 🙏 Acknowledgments
 
